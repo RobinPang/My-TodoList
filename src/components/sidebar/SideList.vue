@@ -2,11 +2,10 @@
   <div class="side-list">
     <ul>
       <li
-        :class="{ active: stat.isRight === parseInt(index) }"
         v-for="(item, index) in list"
         :key="`list-${index}`"
       >
-        <div class="list-items" @click.right="rightMenu(index)">
+        <div class="list-items" @click.right="rightMenu(index)" @click="goto(item.path)">
           <div class="list-icon">
             <i>{{ item.icon }}</i>
           </div>
@@ -20,11 +19,11 @@
         <menu-tool></menu-tool>
       </li>
       <li v-show="stat.isCreate">
-        <div class="list-items">
+        <div class="list-items" style="padding: .675rem 1rem;">
           <div class="list-icon">
             <i class="iconfont icon-nav"></i>
           </div>
-          <div class="list-title">
+          <div class="list-title" style="margin-left: 12px;">
             <input
               type="text"
               v-model="stat.tempItem.title"
@@ -44,12 +43,13 @@
 
 <script setup lang="ts">
 import { useStore } from "vuex";
+import { useRouter } from 'vue-router'
 import { reactive, ref, nextTick } from "vue";
-import MenuTool from "../rightMenu/index.vue";
-const store = useStore();
-const title = ref(null);
+
+const router = useRouter()
+const store = useStore()
+const title = ref(null)
 const stat = reactive({
-  isRight: -1,
   isCreate: false,
   tempItem: {
     icon: "🎉",
@@ -83,12 +83,15 @@ const reset = () => {
 };
 // 右击菜单事件
 const rightMenu = (index: string) => {
-  const items: any = document.querySelector(".side-list");
+  const items: any = document.querySelector(".side-list")
   items.oncontextmenu = function () {
     return false;
-  };
-  stat.isRight = parseInt(index);
+  }
 };
+// 跳转
+const goto = (path: string) => {
+  router.push(path)
+}
 </script>
 
 <style lang="less" scoped>
